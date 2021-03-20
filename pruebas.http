@@ -1,0 +1,19 @@
+GET http://localhost:3010/
+
+###
+GET http://localhost:3010/feed
+
+###
+POST http://localhost:3010/
+Content-Type: application/json
+
+{
+    "username": "elonmusk",
+    "tweet": "I love bitcoin"
+}
+
+###
+GET http://localhost:3010/tweets/einarlop
+
+
+###

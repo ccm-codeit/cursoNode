@@ -19,11 +19,11 @@ mongoose.connect(URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
-});             // boilerplate code, siempre es igual
+}); // esto es "boilerplate code", siempre es igual
 
 const db = mongoose.connection;
-db.on('error', err => console.error(err));      // para detectar errores de conexión con db si los hay
-db.once('open', ()=> console.log("Conexión con Mongo exitosa"));
+db.on('error', err => console.error(err));      // si hay evento de error notificalo
+db.once('open', ()=> console.log("Conexión con Mongo exitosa"));  // una vez abierta la conexión notificalo
 
 // Middleware para el manejo de requests
 server.use(express.json());        // el formato de los datos usados es JSON
@@ -32,25 +32,77 @@ server.use(express.json());        // el formato de los datos usados es JSON
 const Tweet = require('./models/tweet.js');
 
 /* ---RUTAS--- */
-// Especifica el tipo de solicitud http: get o post
 // GET: dame información
 // POST: te mando información
 
+// Dirección base
 server.get('/', function (req, res) {
     res.send("Bienvenido a la API de Twitter");
 });
 
+// Obtener todos los tweets
 server.get('/feed', function(req, res) {
-    res.send("Aquí desplegamos la lista de tweets!");
+    // busca todos los tweets, cuando los tengas regrésamelos. Si hubo algún error, notificalo.
+    Tweet.find()
+    .then((results) => {
+        res.json(results);
+    })
+    .catch((err) => {
+        console.log("Hubo error: " + err)
+        res.status(500).json({message: err.message});
+    })
 })
 
+// Subir un nuevo tweet
 server.post('/', function(req, res) {
-    // Subir un nuevo tweet
+
+    // Obten la información recibida en la request
+    const newTweet = new Tweet({
+        username: req.body.username,
+        tweet: req.body.tweet,
+        posted: req.body.posted,
+    }); 
+
+    // Guardalo a la base de datos, si hay problema notifícalo
+    newTweet.save()
+    .then(() => {
+        res.status(201).send("Creado exitosamente:" + newTweet);
+    })
+    .catch((err)=> {
+        console.log("Hubo error: " + err);
+        res.json(err);
+    })
+
 })
 
+// Borrar un tweet
 server.post('/:id', function(req, res){
-    // borrar un tweet
+    const idToDelete = req.params.id;           // obtén la id que viene en el URL
+    
+    Tweet.findByIdAndDelete(idToDelete)
+    .then((deletedTweet) => {
+        res.status(200).send("Borrado exitosamente:" + deletedTweet);
+    })
+    .catch((err) => {
+        console.log("Hubo error: " + err);
+        res.status(500).json({message: err.message})
+    })
 })
+
+// Obtener tweets por autor
+server.get('/tweets/:username', function(req, res) {
+    const user = req.params.username;
+    console.log("Buscando tweets del usuario: " + user);
+    Tweet.find({"username": user})
+    .then((results) => {
+        res.json(results);
+    })
+    .catch((err) => {
+        console.log("Hubo error:" , err);
+        res.json(err);
+    })
+})
+
 
 
 server.listen(port, ()=> console.log("El servidor está corriendo en el puerto " + port));
