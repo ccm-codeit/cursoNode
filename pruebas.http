@@ -8,8 +8,8 @@ POST http://localhost:3010/
 Content-Type: application/json
 
 {
-    "username": "elonmusk",
-    "tweet": "I love bitcoin"
+    "username": "test",
+    "tweet": "test"
 }
 
 ###
@@ -17,3 +17,4 @@ GET http://localhost:3010/tweets/einarlop
 
 
 ###
+POST http://localhost:3010/delete/605645ea53d6ed1458fa37a1

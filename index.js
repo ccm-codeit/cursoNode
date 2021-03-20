@@ -76,12 +76,17 @@ server.post('/', function(req, res) {
 })
 
 // Borrar un tweet
-server.post('/:id', function(req, res){
+server.post('/delete/:id', function(req, res){
     const idToDelete = req.params.id;           // obtén la id que viene en el URL
     
     Tweet.findByIdAndDelete(idToDelete)
     .then((deletedTweet) => {
-        res.status(200).send("Borrado exitosamente:" + deletedTweet);
+        if (deletedTweet === null) {
+            // la base de datos no encontró el tweet especificado
+            res.status(200).send("Tweet no existe.");
+        } else {
+            res.status(200).send("Borrado exitosamente:" + deletedTweet);
+        }
     })
     .catch((err) => {
         console.log("Hubo error: " + err);
