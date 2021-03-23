@@ -6,14 +6,13 @@
 require('dotenv').config();         // para poder acceder a la información en .env
 const express = require('express');
 const server = express();              // inicializar un servidor de express para recibir requests
-const router = express.Router();    // ayuda a dirigir la solicitud recibida al código correcto
-const port = 3010;   // puerto donde se corre el servidor. Todo servicio en tu compu requiere un servidor
+const port = process.env.PORT || 3010;   // puerto donde se corre el servidor. Todo servicio en tu compu requiere un servidor
 
 // Dependencias
 
 // Connexión a base de datos
 const mongoose = require("mongoose");
-const URI = "mongodb+srv://databaseUser:javascript-me@cluster0.8mmoe.mongodb.net/AuthTest?retryWrites=true&w=majority";
+const URI = process.env.CONNECTION;
 
 mongoose.connect(URI, {
   useNewUrlParser: true,
@@ -107,7 +106,6 @@ server.get('/tweets/:username', function(req, res) {
         res.json(err);
     })
 })
-
 
 
 server.listen(port, ()=> console.log("El servidor está corriendo en el puerto " + port));
