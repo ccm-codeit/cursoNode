@@ -23,7 +23,7 @@ Puedes descargar o clonar esta branch al inicio del curso para programar a maner
 ## Comándos útiles
 ### `nodemon server`
 
-Corre el servidor en modo desarrollo (localmente) en el puerto 5000
-El servidor se refescara automaticamente despueés de cualquier modificación en el código
+Corre el servidor en modo desarrollo (localmente) en el puerto 3010
+El servidor se refrescara automaticamente después de cualquier modificación en el código
 
 # cursoNode
